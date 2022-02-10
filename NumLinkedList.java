@@ -1,3 +1,5 @@
+import java.util.NoSuchElementException;
+
 public class NumLinkedList implements NumList{
 
     private int elementCount = 0;
@@ -20,6 +22,12 @@ public class NumLinkedList implements NumList{
         testList.insert(2, 3);
         System.out.println("The size of the list is: " + testList.size());
         System.out.println(testList);
+        testList.remove(1);
+        System.out.println("Removing element at index 1");
+        System.out.println(testList);
+        testList.insert(1, 2.5);
+        System.out.println(testList);
+
 
     }
 
@@ -31,7 +39,7 @@ public class NumLinkedList implements NumList{
         NumDLNode nodePtr = null;
         try {
             nodePtr = head;
-            for (int j = 0; j < i - 1; j++) {
+            for (int j = 0; j < i; j++) {
                 nodePtr = nodePtr.getNext();
             }
         }catch(NullPointerException e){
@@ -62,11 +70,22 @@ public class NumLinkedList implements NumList{
 
     public void insert(int i, double value){
         NumDLNode nodePtr = iterateTo(i);
+        NumDLNode newNode = null;
         if(nodePtr == null){
             add(value);
         }
-        else {
-            NumDLNode newNode = new NumDLNode(value, nodePtr, nodePtr.getNext());
+        else{
+            if(nodePtr != tail && nodePtr != head) {
+                newNode = new NumDLNode(value, nodePtr.getPrevious(), nodePtr);
+            }
+            else if(nodePtr == head){
+                newNode = new NumDLNode(value, null, nodePtr);
+                head = newNode;
+            }
+            else{
+                newNode = new NumDLNode(value, nodePtr.getPrevious(), null);
+                tail = newNode;
+            }
         }
         elementCount++;
     }
@@ -74,7 +93,7 @@ public class NumLinkedList implements NumList{
     public void remove(int i){
         NumDLNode nodePtr = iterateTo(i);
         if(nodePtr != null) {
-            if (nodePtr != head || nodePtr != tail) {
+            if (nodePtr != head && nodePtr != tail) {
                 nodePtr.getPrevious().setNext(nodePtr.getNext());
                 nodePtr.getNext().setPrevious(nodePtr.getPrevious());
                 elementCount--;
@@ -83,7 +102,7 @@ public class NumLinkedList implements NumList{
                 elementCount--;
                 head = nodePtr.getNext();
             }
-            else if(nodePtr == tail) {
+            else{
                 nodePtr.getPrevious().setNext(null);
                 elementCount--;
                 tail = nodePtr.getPrevious();
@@ -93,11 +112,22 @@ public class NumLinkedList implements NumList{
     }
 
     public boolean contains(double value){
+        NumDLNode nodePtr = head;
+        while(nodePtr != null){
+            if(nodePtr.getElement() == value){
+                return true;
+            }
+            nodePtr = nodePtr.getNext();
+        }
         return false;
     }
 
     public double lookup(int i){
-        return 0;
+        if (i <= elementCount - 1) {
+            return iterateTo(i).getElement();
+        }else{
+            throw new NoSuchElementException();
+        }
     }
 
     public boolean equals(NumList otherList){

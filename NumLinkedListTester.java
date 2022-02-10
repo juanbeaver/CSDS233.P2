@@ -1,5 +1,7 @@
 import org.junit.Test;
 
+import java.util.NoSuchElementException;
+
 import static org.junit.Assert.*;
 
 /**
@@ -19,19 +21,11 @@ public class NumLinkedListTester {
         testList.add(1);
         testList.add(2);
         assertEquals(2, testList.size());
-        assertEquals(5, testList.capacity());
+        assertEquals(4, testList.capacity());
 
         NumLinkedList testList2 = new NumLinkedList();
         assertEquals(0,testList2.size());
         assertEquals(0, testList2.capacity());
-
-        NumLinkedList testList3 = new NumLinkedList();
-        assertEquals(0, testList3.size());
-        assertEquals(1, testList3.capacity());
-
-        NumLinkedList testList4 = new NumLinkedList();
-        assertEquals(0,testList4.size());
-        assertEquals(0, testList4.capacity());
     }
 
     @Test
@@ -162,7 +156,7 @@ public class NumLinkedListTester {
         testList2.add(1);
         testList2.add(2);
 
-        assertThrows(ArrayIndexOutOfBoundsException.class, () ->{
+        assertThrows(NoSuchElementException.class, () ->{
             testList2.lookup(7);
         });
     }
