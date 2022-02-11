@@ -1,4 +1,5 @@
 import java.util.NoSuchElementException;
+import java.util.concurrent.TimeUnit;
 
 public class NumLinkedList implements NumList{
 
@@ -14,20 +15,40 @@ public class NumLinkedList implements NumList{
         tail = null;
     }
 
-    public static void main(String[] args) {
-        NumLinkedList testList = new NumLinkedList();
-        testList.add(1);
-        testList.add(4);
-        testList.add(5);
-        testList.insert(1, 2);
-        testList.insert(2, 3);
-        System.out.println("The size of the list is: " + testList.size());
-        System.out.println(testList);
-        testList.remove(1);
-        System.out.println("Removing element at index 1");
-        System.out.println(testList);
-        testList.insert(1, 2.5);
-        System.out.println(testList);
+    public static void main(String[] args) throws InterruptedException {
+        System.out.println("This is a demonstration of an ADT implementation from scratch");
+        System.out.println("Here is a list in which I will add the numbers 1-10");
+        NumLinkedList list = new NumLinkedList();
+        for (int i = 1; i <= 10; i++) {
+            list.add(i);
+            TimeUnit.MILLISECONDS.sleep(200);
+            System.out.println(list);
+        }
+        System.out.println("Now we will insert 4.5 in its respective spot");
+        list.insert(4, 4.5);
+        TimeUnit.MILLISECONDS.sleep(500);
+        System.out.println(list);
+
+        TimeUnit.MILLISECONDS.sleep(200);
+        System.out.println("And now we will remove the numbers 4.5");
+        list.remove(4);
+        TimeUnit.MILLISECONDS.sleep(200);
+        System.out.println(list);
+        list.remove(9);
+        System.out.println("and 10");
+        TimeUnit.MILLISECONDS.sleep(200);
+        System.out.println(list);
+
+        System.out.println("Now duplicates will be inserted and then removed using the removeDuplicates() method");
+        list.insert(3, 3.0);
+        list.insert(4, 2.0);
+        TimeUnit.MILLISECONDS.sleep(200);
+        System.out.println(list);
+
+        System.out.println("And now they'll be removed by removeDuplicates()");
+        list.removeDuplicates();
+        TimeUnit.MILLISECONDS.sleep(200);
+        System.out.println(list);
 
 
     }
@@ -136,6 +157,18 @@ public class NumLinkedList implements NumList{
         }
     }
 
+    public NumDLNode nodeAt(int i){
+        if (i <= elementCount - 1) {
+            NumDLNode node = head;
+            for (int j = 0; j < i + 1; j++) {
+                node = node.getNext();
+            }
+            return node;
+        }else{
+            throw new NoSuchElementException();
+        }
+
+    }
     //Twp lists are equal if they have all the same numbers in the same sequence
     public boolean equals(NumList otherList){
         if(size() == otherList.size()){
@@ -150,26 +183,113 @@ public class NumLinkedList implements NumList{
     }
 
     public void removeDuplicates(){
-
-    }
-
-    public void reverse() {
-        NumDLNode nodePtr = tail;
-        head = nodePtr;
-        NumDLNode temp = null;
-        while(nodePtr.getPrevious() != null) {
-            if(nodePtr != null) {
-                temp = nodePtr.getNext();
-                nodePtr.setNext(nodePtr.getPrevious());
-                nodePtr.setPrevious(temp);
+        NumDLNode nodePtr = head;
+        NumDLNode lastRemoved = null;
+        if(isSorted){
+            while(nodePtr.getNext() != null){
+                if(nodePtr.getElement() == nodePtr.getNext().getElement()){
+                    lastRemoved = nodePtr.getNext();
+                    nodePtr.setNext(nodePtr.getNext().getNext());
+                    if(nodePtr.getNext() != null) {
+                        nodePtr.getNext().setPrevious(nodePtr);
+                        elementCount--;
+                        nodePtr = head;
+                    }
+                }
+                else{
+                    nodePtr = nodePtr.getNext();
+                }
+            }
+            if(size() > 1) {
+                if (nodePtr.getElement() == lastRemoved.getElement()) {
+                    lastRemoved.setNext(null);
+                }
+            }
+        }
+        else{
+            for (int i = 0; i < elementCount; i++) {
+                for (int j = i + 1; j < elementCount; j++) {
+                    if(nodePtr.getElement() == lookup(j)){
+                        nodeAt(j).getPrevious().setNext(nodeAt(j).getNext());
+                        nodeAt(j).getNext().setPrevious(nodeAt(j).getPrevious());
+                        elementCount--;
+                    }
+                }
                 nodePtr = nodePtr.getNext();
             }
         }
-        tail = nodePtr;
     }
 
-    public static NumList union(NumList list1, NumList list2){
-        return null;
+    public void reverse() {
+        NumDLNode nodePtr = head;
+        NumDLNode temp = null;
+        while(nodePtr != null) {
+            if(nodePtr.getPrevious() == null){
+                tail = nodePtr;
+            }
+            temp = nodePtr.getPrevious();
+            nodePtr.setPrevious(nodePtr.getNext());
+            nodePtr.setNext(temp);
+            nodePtr = nodePtr.getPrevious();
+        }
+        if(temp != null){
+            head = temp.getPrevious();
+        }
+
+
+    }
+
+    public NumList union(NumList list1, NumList list2){
+        NumLinkedList newList = new NumLinkedList();
+
+        NumLinkedList lList1 = (NumLinkedList) list1;
+        NumLinkedList lList2 = (NumLinkedList) list2;
+
+        NumDLNode nodePtr1 = lList1.iterateTo(0);
+        NumDLNode nodePtr2 = lList2.iterateTo(0);
+
+        if(isSorted){
+            while(nodePtr1 != null && nodePtr2 != null){
+                if(nodePtr1.getElement() != nodePtr2.getElement()){
+                    if(nodePtr2.getElement() > nodePtr1.getElement()){
+                        newList.add(nodePtr1.getElement());
+                        nodePtr1 = nodePtr1.getNext();
+                    }
+                    else{
+                        newList.add(nodePtr2.getElement());
+                        nodePtr2 = nodePtr2.getNext();
+                    }
+                }
+                else{
+                    newList.add(nodePtr1.getElement());
+                    nodePtr1 = nodePtr1.getNext();
+                    nodePtr2 = nodePtr2.getNext();
+
+                }
+            }
+            if(nodePtr1 == null){
+                while(nodePtr2 != null){
+                    newList.add(nodePtr2.getElement());
+                    nodePtr2 = nodePtr2.getNext();
+                }
+            }
+            else{
+                while(nodePtr1 != null){
+                    newList.add(nodePtr1.getElement());
+                    nodePtr1 = nodePtr1.getNext();
+                }
+            }
+            return newList;
+        }
+        else{
+            for(int i = 0; i < lList2.elementCount; i++){
+                lList1.add(nodePtr2.getElement());
+                nodePtr2 = nodePtr2.getNext();
+            }
+            lList1.removeDuplicates();
+            newList = lList1;
+        }
+        return newList;
     }
 
     public String toString(){
@@ -178,7 +298,7 @@ public class NumLinkedList implements NumList{
 
         while(nodePtr != null){
             if(nodePtr.getNext() != null) {
-                s2.append(nodePtr.getElement() + " ");
+                s2.append(nodePtr.getElement()).append(" ");
             }
             else{
                 s2.append(nodePtr.getElement());

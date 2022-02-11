@@ -205,6 +205,10 @@ public class NumLinkedListTester {
         testList2.removeDuplicates();
         assertEquals("1.0 2.0 3.0 4.0", testList2.toString());
 
+        NumLinkedList testList3 = new NumLinkedList();
+        testList3.add(1);   testList3.add(65);  testList3.add(13);  testList3.add(1);   testList3.add(43);  testList3.add(13);  testList3.add(121);
+
+        assertEquals("1.0 65.0 13.0 43.0 121.0", testList3.toString());
     }
 
     @Test
@@ -249,20 +253,69 @@ public class NumLinkedListTester {
         testList3.add(1);   testList3.reverse();
 
         assertEquals("1.0", testList3.toString());
+
+
+
+        NumArrayList aList1 = new NumArrayList();
+        aList1.add(1);   aList1.add(2);   aList1.add(3);   aList1.add(4);   aList1.add(5);
+        aList1.reverse();
+
+        assertEquals("5.0 4.0 3.0 2.0 1.0", aList1.toString());
+
+        NumArrayList aList2 = new NumArrayList();
+        aList2.reverse();
+
+        assertEquals("", aList2.toString());
+
+        NumArrayList aList3 =  new NumArrayList();
+        aList3.add(1);   aList3.reverse();
+
+        assertEquals("1.0", aList3.toString());
     }
 
     @Test
     public void testUnion(){
+        NumArrayList aList1 = new NumArrayList();
+        NumArrayList aList2 = new NumArrayList();
+
+        aList1.add(1.0); aList1.add(2.0); aList1.add(3.0); aList1.add(4.0);
+        aList2.add(1.0); aList2.add(4.0); aList2.add(5.0); aList2.add(6.0);
+
+        assertEquals("1.0 2.0 3.0 4.0 5.0 6.0", aList2.union(aList1, aList2).toString());
+
+        NumArrayList aList3 = new NumArrayList();
+        NumArrayList aList4 = new NumArrayList();
+
+        aList3.add(0); aList3.add(5); aList3.add(1); aList3.add(24); aList3.add(99);
+        aList4.add(45); aList4.add(6); aList4.add(87); aList4.add(0); aList4.add(35);
+
+        assertEquals("5.0 1.0 24.0 99.0 45.0 6.0 87.0 35.0", aList3.union(aList3, aList4).toString());
+
+        NumArrayList aList5 = new NumArrayList();
+        aList5.add(4);   aList5.add(86);   aList5.add(53);   aList5.add(890);   aList5.add(3);
+
+        //assertEquals("1.0 ");
+
+        //NumLinkedList Tests
+
         NumLinkedList testList1 = new NumLinkedList();
         NumLinkedList testList2 = new NumLinkedList();
 
         testList1.add(1.0); testList1.add(2.0); testList1.add(3.0); testList1.add(4.0);
         testList2.add(1.0); testList2.add(4.0); testList2.add(5.0); testList2.add(6.0);
 
-        assertEquals("1.0 2.0 3.0 4.0 5.0 6.0", NumLinkedList.union(testList1, testList2).toString());
+        assertEquals("1.0 2.0 3.0 4.0 5.0 6.0", testList2.union(testList1, testList2).toString());
 
         NumLinkedList testList3 = new NumLinkedList();
-        testList3.add(4);   testList3.add(86);   testList3.add(53);   testList3.add(890);   testList3.add(3);
+        NumLinkedList testList4 = new NumLinkedList();
+
+        testList3.add(0); testList3.add(5); testList3.add(1); testList3.add(24); testList3.add(99);
+        testList4.add(45); testList4.add(6); testList4.add(87); testList4.add(0); testList4.add(35);
+
+        assertEquals("5.0 1.0 24.0 99.0 45.0 6.0 87.0 35.0", testList3.union(testList3, testList4).toString());
+
+        NumLinkedList testList5 = new NumLinkedList();
+        testList5.add(4);   testList5.add(86);   testList5.add(53);   testList5.add(890);   testList5.add(3);
 
         //assertEquals("1.0 ");
     }
