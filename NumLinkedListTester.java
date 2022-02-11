@@ -231,4 +231,39 @@ public class NumLinkedListTester {
 
         assertEquals("", testList4.toString());
     }
+
+    @Test
+    public void testReverse(){
+        NumLinkedList testList1 = new NumLinkedList();
+        testList1.add(1);   testList1.add(2);   testList1.add(3);   testList1.add(4);   testList1.add(5);
+        testList1.reverse();
+
+        assertEquals("5.0 4.0 3.0 2.0 1.0", testList1.toString());
+
+        NumLinkedList testList2 = new NumLinkedList();
+        testList2.reverse();
+
+        assertEquals("", testList2.toString());
+
+        NumLinkedList testList3 =  new NumLinkedList();
+        testList3.add(1);   testList3.reverse();
+
+        assertEquals("1.0", testList3.toString());
+    }
+
+    @Test
+    public void testUnion(){
+        NumLinkedList testList1 = new NumLinkedList();
+        NumLinkedList testList2 = new NumLinkedList();
+
+        testList1.add(1.0); testList1.add(2.0); testList1.add(3.0); testList1.add(4.0);
+        testList2.add(1.0); testList2.add(4.0); testList2.add(5.0); testList2.add(6.0);
+
+        assertEquals("1.0 2.0 3.0 4.0 5.0 6.0", NumLinkedList.union(testList1, testList2).toString());
+
+        NumLinkedList testList3 = new NumLinkedList();
+        testList3.add(4);   testList3.add(86);   testList3.add(53);   testList3.add(890);   testList3.add(3);
+
+        //assertEquals("1.0 ");
+    }
 }

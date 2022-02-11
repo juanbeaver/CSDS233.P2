@@ -4,6 +4,7 @@ public class NumLinkedList implements NumList{
 
     private int elementCount = 0;
 
+    private boolean isSorted = true;
     private NumDLNode head;
     private NumDLNode tail;
 
@@ -60,10 +61,12 @@ public class NumLinkedList implements NumList{
         if(isEmpty()){
             head = new NumDLNode(value, null, null);
             tail = head;
+            isSorted = true;
         }
         else{
             tail.setNext(new NumDLNode(value, tail, null));
             tail = tail.getNext();
+            isSorted = tail.getPrevious().getElement() <= tail.getElement();
         }
         elementCount++;
     }
@@ -77,14 +80,17 @@ public class NumLinkedList implements NumList{
         else{
             if(nodePtr != tail && nodePtr != head) {
                 newNode = new NumDLNode(value, nodePtr.getPrevious(), nodePtr);
+                isSorted = value >= nodePtr.getPrevious().getElement() && value <= nodePtr.getElement();
             }
             else if(nodePtr == head){
                 newNode = new NumDLNode(value, null, nodePtr);
                 head = newNode;
+                isSorted = head.getElement() <= head.getNext().getElement();
             }
             else{
                 newNode = new NumDLNode(value, nodePtr.getPrevious(), null);
                 tail = newNode;
+                isSorted = tail.getElement() >= tail.getPrevious().getElement();
             }
         }
         elementCount++;
@@ -130,12 +136,40 @@ public class NumLinkedList implements NumList{
         }
     }
 
+    //Twp lists are equal if they have all the same numbers in the same sequence
     public boolean equals(NumList otherList){
+        if(size() == otherList.size()){
+            for(int i = 0; i < size(); i++){
+                if(lookup(i) != otherList.lookup(i)){
+                    return false;
+                }
+            }
+            return true;
+        }
         return false;
     }
 
     public void removeDuplicates(){
 
+    }
+
+    public void reverse() {
+        NumDLNode nodePtr = tail;
+        head = nodePtr;
+        NumDLNode temp = null;
+        while(nodePtr.getPrevious() != null) {
+            if(nodePtr != null) {
+                temp = nodePtr.getNext();
+                nodePtr.setNext(nodePtr.getPrevious());
+                nodePtr.setPrevious(temp);
+                nodePtr = nodePtr.getNext();
+            }
+        }
+        tail = nodePtr;
+    }
+
+    public static NumList union(NumList list1, NumList list2){
+        return null;
     }
 
     public String toString(){
